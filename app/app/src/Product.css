@@ -1,0 +1,76 @@
+/* Product.css */
+
+/* จัดการปุ่มใน modalTrash */
+#modalTrash .btn-success {
+    display: inline-block;
+    margin: 0 auto;
+}
+
+.product-container {
+    font-family: 'Prompt', sans-serif;
+}
+
+/* จัดการตาราง */
+.table {
+    width: 100%;
+    margin: 0 auto;
+    table-layout: auto; /* เพิ่มการตั้งค่า table-layout */
+}
+
+.table th,
+.table td {
+    text-align: center;
+    vertical-align: middle;
+    overflow: hidden; /* เพิ่มการตั้งค่า overflow */
+    text-overflow: ellipsis; /* เพิ่มการตั้งค่า text-overflow */
+    white-space: nowrap; /* เพิ่มการตั้งค่า white-space */
+}
+
+/* จัดการ modal ให้แสดงผลอย่างถูกต้อง */
+.modal-dialog {
+    max-width: 80%; /* เพิ่มการตั้งค่า max-width */
+}
+
+.modal-content {
+    overflow-x: auto; /* เพิ่มการตั้งค่า overflow-x */
+}
+
+/* จัดการรูปภาพสินค้า */
+.img-fluid {
+    max-width: 400px;
+    height: auto;
+}
+
+/* จัดการรูปภาพสินค้า */
+.img-fluid2 {
+    max-width: 400px;
+    height: auto;
+}
+
+/* ปรับปรุงปุ่ม */
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+/* ปรับแต่งช่อง input */
+.form-control {
+    width: 100%;
+    padding: .375rem .75rem;
+    margin-bottom: 1rem;
+}
