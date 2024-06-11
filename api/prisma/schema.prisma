@@ -24,10 +24,31 @@ model User {
 }
 
 model Product {
-  id     Int    @id() @default(autoincrement())
-  name   String
-  cost   Int
-  price  Int
-  img    String
-  status String @default("use")
+  id            Int              @id() @default(autoincrement())
+  name          String
+  cost          Int
+  price         Int
+  img           String
+  status        String           @default("use")
+  BillSaleDetai BillSaleDetail[]
+}
+
+model BillSale {
+  id            Int              @id() @default(autoincrement())
+  customerName  String
+  customerPhone String
+  payDate       DateTime
+  payTime       String
+  status        String           @default("wait") //wait, pay, send 
+  BillSaleDetai BillSaleDetail[]
+}
+
+model BillSaleDetail {
+  in         Int      @id() @default(autoincrement())
+  productId  Int
+  billSaleId Int
+  product    Product  @relation(fields: [productId], references: [id])
+  BillSale   BillSale @relation(fields: [billSaleId], references: [id])
+  cost       Int
+  price      Int
 }

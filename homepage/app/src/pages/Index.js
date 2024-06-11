@@ -6,6 +6,7 @@ import axios from 'axios';
 import config from "../config";
 import '../index.css';
 import MyModal from "../components/MyModal";
+import dayjs from 'dayjs';
 
 function Index() {
     const [products, setProducts] = useState([]);
@@ -17,12 +18,87 @@ function Index() {
     const [recordInCarts, setRecordInCarts] = useState(0);
     const [sumQty, setSumQty] = useState(0);
     const [sumPrice, setSumPrice] = useState(0);
+    const [customerName, setCustomerName] = useState('');
+    const [customerPhone, setCustomerPhone] = useState('');
+    const [payDate, setPayDate] = useState(dayjs(new Date()).format('YYYY-MM-DD'));
+    const [payTime, setPayTime] = useState('');
+    const [cartAnimation, setCartAnimation] = useState(false);
+
+
 
 
     useEffect(() => {
         fetchData();
         fetchDataFromLocal();
     }, []);
+
+    const handleSave = async () => {
+        try {
+            const payload = {
+                customerName: customerName,
+                customerPhone: customerPhone,
+                payDate: payDate,
+                payTime: payTime,
+                carts: carts
+            }
+
+            const res = await axios.post(config.apiPath + '/api/sale/save', payload);
+
+            if (res.data.message === 'success') {
+                localStorage.removeItem('carts');
+                setRecordInCarts(0);
+                setCarts([]);
+
+                Swal.fire({
+                    title: 'บันทึกข้อมูล',
+                    text: 'ระบบได้บันทึกข้อมูลของคุณแล้ว',
+                    icon: 'success'
+                })
+            }
+        } catch (e) {
+            Swal.fire({
+                title: 'error',
+                text: e.message,
+                icon: 'error'
+            });
+        }
+    }
+
+    const handleRemove = async (item) => {
+        try {
+            const button = await Swal.fire({
+                title: 'ลบสินค้า',
+                text: 'คุณต้องการลบสินค้าออกจากตะกร้าใช่หรือไม่',
+                icon: 'question',
+                showCancelButton: true,
+                showConfirmButton: true,
+            })
+
+            if (button.isConfirmed) {
+                let arr = carts;
+
+                for (let i = 0; i < arr.length; i++) {
+                    const itemIncarts = arr[i];
+
+                    if (item.id === itemIncarts.id) {
+                        arr.splice(i, 1);
+                    }
+                }
+                setCarts(arr);
+                setRecordInCarts(arr.length);
+
+                localStorage.setItem('carts', JSON.stringify(arr));
+
+                computePriceAndQty(arr);
+            }
+        } catch (e) {
+            Swal.fire({
+                title: 'error',
+                text: e.message,
+                icon: 'error'
+            })
+        }
+    }
 
     const handleCloseModal = () => {
         document.getElementById('modalCart_btnClose').click();
@@ -107,6 +183,11 @@ function Index() {
         localStorage.setItem('carts', JSON.stringify(carts));
 
         fetchDataFromLocal();
+
+        // Trigger cart icon animation
+        setCartAnimation(true);
+        setTimeout(() => setCartAnimation(false), 1000); // Animation duration
+
     };
 
     const filteredProducts = products.filter(item => item.name.includes(searchTerm));
@@ -138,7 +219,7 @@ function Index() {
                         <button
                             data-bs-toggle='modal'
                             data-bs-target='#modalCart'
-                            className="btn btn-outline-warning ms-2 me-2 ">
+                            className={`btn btn-warning ms-2 me-2 ${cartAnimation ? 'cart-animate' : ''}`}>
                             <i className="fa fa-shopping-cart me-2"></i>
                             {recordInCarts}
                         </button>
@@ -212,7 +293,7 @@ function Index() {
                             <th>รายการ</th>
                             <th className="text-end">ราคา</th>
                             <th className="text-end">จำนวน</th>
-                            <th className="text-center" width='60px'>ลบ</th>
+                            <th className="text-center" width='60px'></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -222,7 +303,7 @@ function Index() {
                                 <td className="text-end">{item.price.toLocaleString('th-TH')}</td>
                                 <td className="text-end">1</td>
                                 <td className="text-center">
-                                    <button className="btn btn-danger">
+                                    <button className="btn btn-danger" onClick={e => handleRemove(item)}>
                                         <i className="fa fa-times"></i>
                                     </button>
                                 </td>
@@ -236,27 +317,36 @@ function Index() {
                 </div>
 
                 <div className="mt-3">
-                    <div className="alert alert-info">
+                    <div className="alert alert-info ">
                         <div>โปรดโอนเงินไปยังบัญชี</div>
-                        <div>กรุงไทย : ขวานฟ้าลอตเตอรี่  757-115-95965 </div>
+                        <div>กรุงไทย : ขวานฟ้าลอตเตอรี่  757-115-95965
+                            หากเป็นบัญชีนอกจากที่แจ้ง คือ บัญชีแอบอ้าง หรือ มิจฉาชีพ
+                            โปรดระวัง!! </div>
                     </div>
+                    {/* <div className=" alert alert-info me-3 p-2">สแกนเพื่อจ่าย
+                        <img className="QrCode " height='100px' src="/uploads/qr.png" alt="QR Code" />
+                    </div> */}
                     <div className="mt-3">
                         <div>ชื่อผู้ซื้อ</div>
-                        <input className="form-control" />
+                        <input className="form-control" placeholder="โปรดกรอกให้ตรงกับชื่อจริง"
+                            onChange={e => setCustomerName(e.target.value)} />
                     </div>
                     <div className="mt-3">
                         <div>เบอร์โทรติดต่อ</div>
-                        <input className="form-control" />
+                        <input className="form-control" placeholder="โปรดกรอกให้ตรงกับเวลาเบอร์ติดต่อจริง"
+                            onChange={e => setCustomerPhone(e.target.value)} />
                     </div>
                     <div className="mt-3">
                         <div>วันที่โอน</div>
-                        <input className="form-control" type="date" />
+                        <input className="form-control" type="date"
+                            value={payDate} onChange={e => setPayDate(e.target.value)} />
                     </div>
                     <div className="mt-3">
                         <div>เวลาที่โอน</div>
-                        <input className="form-control" />
+                        <input className="form-control" placeholder="โปรดกรอกให้ตรงกับเวลาโอนจริง"
+                            onChange={e => setPayTime(e.target.value)} />
                     </div>
-                    <button className="btn btn-primary mt-3">
+                    <button className="btn btn-primary mt-3" onClick={handleSave}>
                         <i className="fa fa-check me-2"></i>ยืนยันการซื้อ
                     </button>
                     <button className="btn btn-secondary mt-3 ms-2 me-2" onClick={handleCloseModal}>
