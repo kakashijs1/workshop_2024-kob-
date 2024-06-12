@@ -370,7 +370,7 @@ function Product() {
             </button>
 
             <table className="mt-3 table table-bordered table-hover ">
-                <thead className="bg-success">
+                <thead className="bg-primary">
                     <tr>
                         <th width='300px'>ภาพสินค้า</th>
                         <th>name</th>

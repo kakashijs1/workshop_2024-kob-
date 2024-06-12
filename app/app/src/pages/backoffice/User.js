@@ -118,7 +118,7 @@ function User() {
                 </button>
             </div>
             <table className="table table-bordered table-hover mt-3">
-                <thead className="bg-success">
+                <thead className="bg-primary">
                     <tr>
                         <th>ชื่อผู้ใช้</th>
                         <th>อีเมล์</th>
