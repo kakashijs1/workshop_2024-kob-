@@ -1,5 +1,3 @@
-// Index.js
-
 import { useEffect, useState } from "react";
 import Swal from 'sweetalert2';
 import axios from 'axios';
@@ -7,6 +5,7 @@ import config from "../config";
 import '../index.css';
 import MyModal from "../components/MyModal";
 import dayjs from 'dayjs';
+
 
 function Index() {
     const [products, setProducts] = useState([]);
@@ -20,12 +19,9 @@ function Index() {
     const [sumPrice, setSumPrice] = useState(0);
     const [customerName, setCustomerName] = useState('');
     const [customerPhone, setCustomerPhone] = useState('');
-    const [payDate, setPayDate] = useState(dayjs(new Date()).format('YYYY-MM-DD'));
+    const [payDate, setPayDate] = useState(dayjs(new Date()).format('YYYY-MM-DD')); // ต้องเป็น YYYY-MM-DD สำหรับ HTML5 date input field
     const [payTime, setPayTime] = useState('');
     const [cartAnimation, setCartAnimation] = useState(false);
-
-
-
 
     useEffect(() => {
         fetchData();
@@ -37,7 +33,7 @@ function Index() {
             const payload = {
                 customerName: customerName,
                 customerPhone: customerPhone,
-                payDate: payDate,
+                payDate: dayjs(payDate).format('DD-MM-YYYY'),
                 payTime: payTime,
                 carts: carts
             }
@@ -57,8 +53,8 @@ function Index() {
 
                 document.getElementById('modalCart_btnClose').click();
                 setCustomerName('');
-                setCustomerName('');
-                setPayDate(new Date());
+                setCustomerPhone('');
+                setPayDate(dayjs(new Date()).format('YYYY-MM-DD'));  // รีเซ็ตวันที่เป็น YYYY-MM-DD สำหรับการแสดงใน input field
                 setPayTime('');
             }
         } catch (e) {
@@ -151,13 +147,10 @@ function Index() {
 
     };
 
-
     const handleSearchChange = (event) => {
         const value = event.target.value;
         setSearchTerm(value);
-
     };
-
 
     const handleRandomProduct = () => {
         const randomIndex = Math.floor(Math.random() * products.length);
@@ -193,7 +186,6 @@ function Index() {
         // Trigger cart icon animation
         setCartAnimation(true);
         setTimeout(() => setCartAnimation(false), 1000); // Animation duration
-
     };
 
     const filteredProducts = products.filter(item => item.name.includes(searchTerm));
@@ -208,7 +200,6 @@ function Index() {
         }
         return <></>;
     }
-
 
     return (
         <>
@@ -347,6 +338,7 @@ function Index() {
                         <input className="form-control" type="date"
                             value={payDate} onChange={e => setPayDate(e.target.value)} />
                     </div>
+
                     <div className="mt-3">
                         <div>เวลาที่โอน</div>
                         <input className="form-control" placeholder="โปรดกรอกให้ตรงกับเวลาโอนจริง"
@@ -360,7 +352,6 @@ function Index() {
                     </button>
                 </div>
             </MyModal>
-
         </>
     );
 }
