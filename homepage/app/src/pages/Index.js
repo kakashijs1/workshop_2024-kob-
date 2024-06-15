@@ -33,7 +33,7 @@ function Index() {
             const payload = {
                 customerName: customerName,
                 customerPhone: customerPhone,
-                payDate: dayjs(payDate).format('DD-MM-YYYY'),
+                payDate: dayjs(payDate).format('YYYY-MM-DD'),
                 payTime: payTime,
                 carts: carts
             }

@@ -125,7 +125,6 @@ function Product() {
             product.price = parseInt(product.price);
             product.cost = parseInt(product.cost);
 
-
             let res;
 
             if (product.id === undefined) {
@@ -133,17 +132,18 @@ function Product() {
             } else {
                 res = await axios.put(config.apiPath + '/product/update', product, config.headers());
             }
+
             if (res.data.message === 'success') {
                 Swal.fire({
                     title: 'save',
                     text: 'success',
-                    icon: "success",
-                    timer: 500 //1000 = 1 วิ
+                    icon: 'success',
+                    timer: 500 // 1000 = 1 วินาที
                 })
                 document.getElementById('modalProduct_btnClose').click();
                 fetchData();
 
-                setProduct({ ...product, id: undefined }); //Clear id
+                setProduct({ ...product, id: undefined }); // Clear id
             }
         } catch (e) {
             Swal.fire({
